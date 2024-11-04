@@ -43,7 +43,24 @@ router.get('/:id', (req, res) => {
 })
 
 router.post('/', (req, res) => {
-    
+   const post = req.body 
+   if(!post.title || !post.content ){
+    return res.status(400).json({
+        message: "Please provide title and contents for the post"
+    })
+
+   } Post.insert(post)
+    .then(newPost => {
+        res.status(201).json(newPost)
+    })
+    .catch(err => {
+        res.status(500).json({
+           message:"The post with the specified ID does not exist",
+           err: err.message,
+           stack: err.stack, 
+        })
+    })
+   
 })
 
 router.delete('/:id', (req, res) => {
