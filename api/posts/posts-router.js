@@ -43,19 +43,22 @@ router.get('/:id', (req, res) => {
 })
 
 router.post('/', (req, res) => {
-   const post = req.body 
-   if(!post.title || !post.content ){
+   const {title, contents} = req.body 
+   if(!title || !contents ){
     return res.status(400).json({
         message: "Please provide title and contents for the post"
     })
 
-   } Post.insert(post)
-    .then(newPost => {
-        res.status(201).json(newPost)
+   } Post.insert({title, contents})
+    .then(({id}) => {
+       return Post.findById(id)
+    })
+    .then(post => {
+        res.status(201).json(post)
     })
     .catch(err => {
         res.status(500).json({
-           message:"The post with the specified ID does not exist",
+           message:"There was an error while saving the post to the database",
            err: err.message,
            stack: err.stack, 
         })
